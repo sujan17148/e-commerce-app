@@ -1,6 +1,6 @@
 # ecommerce-app
 
-🔗 Live Demo: [https://www.google.com/]
+🔗 Live Demo: [https://shopcraft-store.netlify.app/]
 
 ---
 
