@@ -35,7 +35,7 @@ export default function FilterProducts({ product,className,setCurrentPage}) {
     if (selectedBrand !== "all")
       products = products.filter((product) => product.brand == selectedBrand);
     if(debouncedValue.trim()!==""){
-      products=products.filter(product=>product.title.includes(debouncedValue.trim()) ||product.category.includes(debouncedValue.trim()) || product.brand.includes(debouncedValue.trim()))
+      products=products.filter(product=>product.title.toLowerCase().includes(debouncedValue.trim().toLowerCase()) ||product.category.toLowerCase().includes(debouncedValue.trim().toLowerCase()) || product.brand.toLowerCase().includes(debouncedValue.trim().toLowerCase()))
     }
 
     setFilteredProduct(()=>{

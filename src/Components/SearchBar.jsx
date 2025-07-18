@@ -42,7 +42,7 @@ function ShowSuggestion({debouncedValue,setSearchValue,suggestions,setSuggestion
     useEffect(()=>{
       if(!data || !data.products) return;
       if(debouncedValue.trim()!==""){
-        const suggestedProducts=data?.products?.filter(product=>product.title.toLowerCase().includes(debouncedValue)|| product.brand.toLowerCase().includes(debouncedValue) || product.category.toLowerCase().includes(debouncedValue))
+        const suggestedProducts=data?.products?.filter(product=>product.title.toLowerCase().includes(debouncedValue.toLowerCase())|| product.brand.toLowerCase().includes(debouncedValue.toLowerCase()) || product.category.toLowerCase().includes(debouncedValue.toLowerCase()))
         setSuggestions(suggestedProducts)
       }
       else{
