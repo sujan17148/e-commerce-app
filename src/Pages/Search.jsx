@@ -16,9 +16,9 @@ export default function Search() {
     setSearchResults(
       data?.products?.filter(
         (product) =>
-          product.title.toLowerCase().includes(query) ||
-          product.brand.toLowerCase().includes(query) ||
-          product.category.toLowerCase().includes(query)
+          product.title.toLowerCase().includes(query.toLowerCase()) ||
+          product.brand.toLowerCase().includes(query.toLowerCase()) ||
+          product.category.toLowerCase().includes(query.toLowerCase())
       )
     );
   }, [data, location.key]);
@@ -28,7 +28,7 @@ export default function Search() {
       {isLoading ? (
         <Loader />
       ) : searchResults.length == 0 ? (
-        <div className="no-products min-h-[50dvh] w-full flex flex-col justify-center items-center gap-3">
+        <div className="no-products min-h-[50dvh] w-full flex flex-col justify-center items-center gap-3 text-center">
             <h1 className="text-secondary font-bold text-2xl md:text-4xl">OOPs! 😕</h1>
           <h1 className="text-clack font-bold text-2xl md:text-4xl">
             We couldn't find anything related to your query

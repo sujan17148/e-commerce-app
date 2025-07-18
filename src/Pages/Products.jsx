@@ -39,7 +39,7 @@ export default function Products() {
           ) : filteredProduct?.length == 0 ? (
             <div className="min-h-[60dvh] w-full flex flex-col items-center justify-center text-center px-4">
             <h2 className="text-2xl sm:text-4xl font-bold text-secondary">No Products Found 😕</h2>
-            <p className="text-gray-600 font-medium mt-2 mb-4">
+            <p className="text-gray-600 font-medium mt-2 mb-4 text-center">
               We couldn’t find any products matching your filters.
             </p>
           </div>
