@@ -51,7 +51,7 @@ function ShowSuggestion({debouncedValue,setSearchValue,suggestions,setSuggestion
     },[data,debouncedValue])
     return   <div className={`suggestion absolute z-10 top-11 right-1 w-[95%] rounded-t-xl pt-1 bg-primary  shadow-[6px_6px_12px_#c5c5c5]  ${suggestions.length==0 ? "hidden":""}`}>
            {!isLoading && suggestions?.slice(0,5).map(product=>(<Link  onClick={()=>{
-            setSuggestions[""]
+            setSuggestions([])
             setSearchValue("")
            }} key={product.id} to={`/products/details/${product.id}`}>  <p 
                 className="p-2 py-1 border-b  border-b-secondary line-clamp-2"
