@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { ProductsContext } from "../Context/ProductsContext";
 import { FaShippingFast } from "react-icons/fa";
 import { IoShieldOutline } from "react-icons/io5";
@@ -16,6 +16,9 @@ import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Home() {
+  useEffect(()=>{
+window.scrollTo(0,0)
+  },[])
   return (
     <>
       <HeroSection />

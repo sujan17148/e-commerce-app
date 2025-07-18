@@ -1,8 +1,12 @@
 import { useParams,Link } from "react-router-dom";
 import useFetch from "../Hooks/useFetch";
 import CategoryCard from "../Components/CategoryCard";
+import { useEffect } from "react";
 
 export default function Category() {
+  useEffect(()=>{
+window.scrollTo(0,0)
+  },[])
   const { productCategory } = useParams();
   const { data, error, isLoading } = useFetch(
     `https://fakestoreapi.in/api/products/category?type=${productCategory}`

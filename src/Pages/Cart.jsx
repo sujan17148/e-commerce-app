@@ -6,6 +6,9 @@ import CartImage from "../assets/cart.png"
 
 export default function Cart() {
   const { cartData} = useContext(CartContext);
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[])
   return (<>
     {cartData?.length<=0 ? <NoCartItems/>: 
     <div className="cart-page space-y-5 p-5 md:px-10">

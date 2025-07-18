@@ -11,6 +11,7 @@ export default function ProductDetails() {
   let [productDiscount,setProductDiscount]=useState(0)
   const [quantity,setQuantity]=useState(1)
   useEffect(() => {
+    window.scrollTo(0,0)
     if (!data?.products) return;
     let requiredProduct =
       data.products.find((product) => product.id === Number(productId)) || {};

@@ -11,6 +11,7 @@ export default function Search() {
   const param = new URLSearchParams(location.search);
   const query = param.get("q");
   useEffect(() => {
+    window.scrollTo(0,0)
     if (!data || !data.products) return;
     setSearchResults(
       data?.products?.filter(
