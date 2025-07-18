@@ -85,7 +85,7 @@ setIsMobileSearchVisible(false)
       <div className="top-right flex items-center gap-2.5 ">
                 <div className=" relative mobile-searchbar sm:hidden ">
                 <IoSearchSharp onClick={()=>setIsMobileSearchVisible(prev=>!prev)} className="flex items-center justify-center p-2 h-9 w-9 rounded-full hover:bg-accent hover:text-primary "/>
-                  <div className={`searchbar-box absolute top-10 right-0 z-5 ${isMobileSearchVisible? "" :"hidden"}`}>
+                  <div className={`searchbar-box absolute top-10 -right-5 z-5 ${isMobileSearchVisible? "" :"hidden"}`}>
                     <SearchBar/>
                   </div>
                 </div>

@@ -8,6 +8,13 @@ export default function SearchBar({}){
     const [searchValue,setSearchValue]=useState("")
     const [suggestions,setSuggestions]=useState([])
     const {debouncedValue}=useDebounce(searchValue)
+    function handleClickSearch(){
+      if(debouncedValue.trim()!=""){
+        navigate(`/search?q=${searchValue}`);
+        setSuggestions([])
+        setSearchValue("");
+      }
+    }
     function handleSearch(e) {
         if (e.key == "Enter" && searchValue.length > 0) {
           navigate(`/search?q=${searchValue}`);
@@ -24,7 +31,7 @@ export default function SearchBar({}){
       value={searchValue}
       onChange={(e) => setSearchValue(e.target.value)}
     />
-    <IoSearchSharp className="text-xl text-gray-400 " />
+    <IoSearchSharp onClick={handleClickSearch}  className="text-xl text-gray-400 " />
 
      <ShowSuggestion debouncedValue={debouncedValue} setSearchValue={setSearchValue} suggestions={suggestions} setSuggestions={setSuggestions}/>
     
