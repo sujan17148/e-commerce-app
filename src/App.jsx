@@ -7,7 +7,7 @@ import {  useSelector } from "react-redux";
 import useLocalStorage from "./Hooks/useLocalStorage";
 import { useEffect } from "react";
 function App() {
-  const cartData = useSelector((state) => state.cart);
+  const cartData = useSelector((state) => state?.cart);
    const {setStorageData} =useLocalStorage("guest",{products:[]})
    useEffect(()=>{
       setStorageData(cartData)
