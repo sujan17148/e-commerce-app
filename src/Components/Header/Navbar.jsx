@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 
 export default function Navbar() {
   let location=useLocation()
-  const totalCartItems=useSelector(state=>state.cart?.products?.length)
+  const totalCartItems=useSelector(state=>state.cart?.products?.length) || 0
   const [isMobileSearchVisible,setIsMobileSearchVisible]=useState(false)
   useEffect(()=>{
 setIsMobileSearchVisible(false)
