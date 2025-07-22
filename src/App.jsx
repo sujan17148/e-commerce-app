@@ -1,37 +1,38 @@
-import { Outlet } from "react-router-dom"
-import Navbar from "./Components/Header/Navbar"
-import Footer from "./Components/Footer/Footer"
-import { ClerkProvider } from '@clerk/clerk-react'
-import {ProductsContextProvider} from "./Context/ProductsContext"
-import CartContextProvider from "./Context/CartContext"
-
-import { ToastContainer } from "react-toastify"
-
+import { Outlet } from "react-router-dom";
+import Navbar from "./Components/Header/Navbar";
+import Footer from "./Components/Footer/Footer";
+import { ProductsContextProvider } from "./Context/ProductsContext";
+import { ToastContainer } from "react-toastify";
+import {  useSelector } from "react-redux";
+import useLocalStorage from "./Hooks/useLocalStorage";
+import { useEffect } from "react";
 function App() {
-  const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+  const cartData = useSelector((state) => state.cart);
+   const {setStorageData} =useLocalStorage("guest",{products:[]})
+   useEffect(()=>{
+      setStorageData(cartData)
+   },[cartData])
+
+  
   return (
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <ProductsContextProvider>
-     <CartContextProvider>
-      <Navbar/>
-      <Outlet/>
-      <Footer/>
-   {/* //toast  */}
-      <ToastContainer
-position="bottom-right"
-autoClose={1500}
-hideProgressBar={false}
-newestOnTop
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-theme="light"
-/>
-     </CartContextProvider>
+        <Navbar />
+        <Outlet />
+        <Footer />
+        {/* //toast  */}
+        <ToastContainer
+          position="top-right"
+          autoClose={1500}
+          hideProgressBar={false}
+          oldestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </ProductsContextProvider>
-    </ClerkProvider>
-  )
+  );
 }
-export default App
+export default App;

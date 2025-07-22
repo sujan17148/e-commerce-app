@@ -1,11 +1,11 @@
-import { useContext,useEffect, useState } from "react";
-import { CartContext } from "../Context/CartContext";
+import {useEffect, useState } from "react";
 import CartProductCard from "../Components/CartProductCard";
 import { Link } from "react-router-dom";
 import CartImage from "../assets/cart.png"
+import { useSelector } from "react-redux";
 
 export default function Cart() {
-  const { cartData} = useContext(CartContext);
+  const cartData=useSelector(state=>state?.cart?.products)
   useEffect(()=>{
     window.scrollTo(0,0)
   },[])

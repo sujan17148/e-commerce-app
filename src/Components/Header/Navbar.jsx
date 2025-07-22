@@ -1,9 +1,7 @@
 import { NavLink, Link,useLocation } from "react-router-dom";
-import { CartContext } from "../../Context/CartContext";
-import useLocalStorage from "../../Hooks/useLocalStorage";
 import SearchBar from "../SearchBar";
 import { IoSearchSharp } from "react-icons/io5";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import {
   SignedIn,
   SignedOut,
@@ -14,26 +12,16 @@ import { HiMenuAlt3 } from "react-icons/hi";
 import { FaCartShopping } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function Navbar() {
   let location=useLocation()
-  const {cartData,setCartData}=useContext(CartContext)
-  const [totalCartItems,setTotalcartItems]=useState(0)
-  const {storageData,setStorageData}=useLocalStorage("guest")
+  const totalCartItems=useSelector(state=>state.cart.products.length)
   const [isMobileSearchVisible,setIsMobileSearchVisible]=useState(false)
   useEffect(()=>{
 setIsMobileSearchVisible(false)
   },[location.search])
-  useEffect(()=>{
-   setCartData(storageData)
-  },[])
-
-  useEffect(()=>{
-  if(cartData){
-   setStorageData(cartData)
-      setTotalcartItems(cartData.length || 0)
-  }
-  },[cartData])
+ 
   return (
     <div className="navbar h-16 sticky top-0 left-0 z-10 text-black bg-primary shadow-xl flex justify-between items-center px-5 lg:px-10">
       <div className="top-left flex items-center gap-10">
@@ -93,7 +81,7 @@ setIsMobileSearchVisible(false)
               <SearchBar />
            </div>
         <Link className="relative" to="/cart">
-          <span className="absolute rounded-full bg-red-500 text-primary h-[22px] w-[22px]  flex items-center justify-center font-semibold top-0 right-0">{totalCartItems}</span>
+          <span className="totalcartItems absolute rounded-full bg-red-500 text-primary h-[22px] w-[22px]  flex items-center justify-center font-semibold top-0 right-0">{totalCartItems}</span>
           <FaCartShopping className="font-bold h-11 w-11 p-2 rounded-full hover:bg-secondary" />
         </Link>
         <div className="user hidden lg:flex items-center">
@@ -104,7 +92,7 @@ setIsMobileSearchVisible(false)
 
           {/* //signed out state  */}
           <SignedOut>
-            <SignInButton className="p-2 bg-secondary text-primary font-semibold rounded hover:scale-105 transition duration-200 ease-linear" />
+            <SignInButton className="p-2  bg-secondary outline-none text-primary font-semibold rounded hover:scale-105 transition duration-200 ease-linear" />
           </SignedOut>
         </div>
         <MobileNavbar />

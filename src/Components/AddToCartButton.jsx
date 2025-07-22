@@ -1,13 +1,15 @@
-import { useContext, useEffect } from "react";
-import { CartContext } from "../Context/CartContext";
+import { useContext, } from "react";
 import { ProductsContext } from "../Context/ProductsContext";
+import { useDispatch,useSelector } from "react-redux";
+import { addToCart,increaseQuantity } from "../Features/CartSlice";
 import { useUser } from "@clerk/clerk-react";
 import { toast } from "react-toastify";
 
 export default function AddToCartButton({ id, quantity = 1, className = "" }) {
+  let dispatch=useDispatch()
+  let cartData=useSelector(state=>state.cart.products)
   let {user}=useUser()
   const { data, error, isLoading } = useContext(ProductsContext);
-  const { cartData, setCartData } = useContext(CartContext);
   function addtoCart(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -21,33 +23,20 @@ export default function AddToCartButton({ id, quantity = 1, className = "" }) {
       toast.warn("⚠️ Please select a valid quantity before adding.");
       return;
     }
-    if (cartData?.length>0 && cartData?.some(cartProduct=>cartProduct.id==product.id)) {
-      setCartData((prev) =>
-        prev.map((cartProduct) =>
-          cartProduct.id == product.id
-            ? {
-                ...cartProduct,
-                quantity:cartProduct.quantity + quantity
-              }
-            : cartProduct
-        )
-      );
+ const alreadyInCart=cartData?.some(product=>product.id==id)
+    if (alreadyInCart) {
       toast.info("Product is already in the cart — quantity updated.");
-
     } else {
-      setCartData((prev) => [
-        ...prev,
-        {
-          id: product.id,
-          title: product.title,
-          image: product.image,
-          quantity: quantity,
-          price: product.price,
-          discount:product.discount || 0,
-        },
-      ]);
       toast.success("🎉 Product added to cart!");
     }
+    dispatch(addToCart({
+        id: product.id,
+        title: product.title,
+        image: product.image,
+        quantity: quantity,
+        price: product.price,
+        discount:product.discount || 0,
+      }))
   }
   return (
     <button

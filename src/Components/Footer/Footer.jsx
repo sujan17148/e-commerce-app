@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaFacebookF } from "react-icons/fa6";
-import { FaTwitter,FaInstagram } from "react-icons/fa";
+import { FaTwitter,FaGithub } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 
 export default function Footer() {
@@ -57,17 +57,17 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Connect With Us</h3>
             <div className="flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-secondary transition-colors duration-200">
-                <FaFacebookF className="h-5 w-5" />
+            <a href="https://github.com/sujan17148" target="_blank" className="text-muted-foreground hover:text-secondary transition-colors duration-200">
+                <FaGithub className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-secondary transition-colors duration-200">
+              <a href="mailto:sujansah.dev@gmail.com" className="text-muted-foreground hover:text-secondary transition-colors duration-200">
+                <IoMdMail className="h-5 w-5" />
+              </a>
+              <a href="https://x.com/Suzan6225667317" target="_blank" className="text-muted-foreground hover:text-secondary transition-colors duration-200">
                 < FaTwitter className="h-5 w-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-secondary transition-colors duration-200">
-                <FaInstagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-secondary transition-colors duration-200">
-                <IoMdMail className="h-5 w-5" />
+                <FaFacebookF className="h-5 w-5" />
               </a>
             </div>
             <p className="text-sm text-muted-foreground">

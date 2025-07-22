@@ -1,33 +1,28 @@
-import { CartContext} from "../Context/CartContext";
-import { useUser } from "@clerk/clerk-react";
+import { useSelector,useDispatch } from "react-redux";
+import { removeFromCart,increaseQuantityByOne,decreaseQuantityByOne } from "../Features/CartSlice";
 import { IoAdd } from "react-icons/io5";
 import { RiSubtractLine } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
-import { useContext} from "react";
 import { toast } from "react-toastify";
 export default function CartProductCard({id}){
-    const {user}=useUser()
-    const { cartData,setCartData} = useContext(CartContext);
+    const dispatch=useDispatch()
+    const cartData=useSelector(state=>state.cart.products)
     const product=cartData?.find(product=>product.id==id)   
 
-      function  handleProductDelete(id){
-            setCartData(prev=>prev.filter(product=>product.id!=id))
+      function  handleProductDelete(){
+            dispatch(removeFromCart(id))
             toast.success("🗑️ Product removed from  cart.");
         }
-        function addQuantity(id){
-            setCartData(prev=>prev.map(product=>
-                 product.id==id ? {...product,quantity:product.quantity+1} : product
-            ))
+        function addQuantity(){
+            dispatch(increaseQuantityByOne(id))
             toast.success("🛒 Quantity updated!");
         }
-        function reduceQuantity(id){
+        function reduceQuantity(){
             if(product.quantity==1) {
-                handleProductDelete(id)
+                handleProductDelete()
                 return;
             }
-            setCartData(prev=>prev.map(product=>
-                 product.id==id ? {...product,quantity:product.quantity-1} : product
-            ))
+            dispatch(decreaseQuantityByOne(id))
             toast.success("🛒 Quantity updated!");
         }
     return <div className="bg-[#F3F4F6] h-32 w-full flex items-center justify-between  p-2 md:p-5 gap-2.5">
