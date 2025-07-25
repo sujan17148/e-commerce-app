@@ -12,6 +12,9 @@
     .custom-flexible-cards{
         @apply inline-block  max-w-[185px] w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(25%-15px)] xl:w-[calc(20%-16px)]  2xl:w-[calc(16.666%-16.66px)];
     }
+    .custom-toast{
+        @apply max-w-[90%] m-1;
+    }
 
 
     .pagination-button{

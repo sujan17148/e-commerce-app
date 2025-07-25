@@ -31,6 +31,7 @@ function App() {
           draggable
           pauseOnHover
           theme="light"
+          toastClassName="custom-toast"
         />
       </ProductsContextProvider>
   );
