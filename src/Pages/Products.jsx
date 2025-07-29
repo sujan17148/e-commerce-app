@@ -6,16 +6,20 @@ import ProductCard from "../Components/ProductCard";
 import { ProductsContext } from "../Context/ProductsContext";
 import Pagination from "../Components/Pagination";
 import { FaFilter } from "react-icons/fa";
+import useFetch from "../Hooks/useFetch";
 export default function Products() {
   const { data, error, isLoading } = useContext(ProductsContext);
   const [filteredProduct, setFilteredProduct] = useState([]);
   const [isMobileFilterVisible,setIsMobileFilterVisible]=useState(false)
   const [currentPage, setCurrentPage] = useState(1);
-  const lastpage = Math.ceil(data?.products.length / 14);
+  const [lastpage,setlastpage]=useState(1)
   useEffect(() => {
     setFilteredProduct(data?.products);
     window.scrollTo(0,0)
   }, [data]);
+  useEffect(()=>{
+    setlastpage(Math.ceil(filteredProduct?.length / 14))
+  },[filteredProduct])
 
   return (
     <>

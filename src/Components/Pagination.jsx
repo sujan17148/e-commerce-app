@@ -10,20 +10,26 @@ export default function Pagination({ currentPage, setCurrentPage, lastPage }) {
     setCurrentPage(selectedPage);
   }
   function getPageNumbers() {
+    if(lastPage<=1) return [1];
+    if (lastPage <= 4) {
+      // if total pages are 2, 3, or 4 — return all of them
+      return Array.from({ length: lastPage }, (_, i) => i + 1);
+    }
     if (currentPage <= 3) return [1, 2, 3, 4];
-    if (currentPage >= lastPage - 2)
+    if (currentPage >= lastPage - 2){
       return [lastPage - 3, lastPage - 2, lastPage - 1, lastPage];
+    }
     return [currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
   }
   return (
     <div className="w-full my-5 flex items-center justify-center gap-2.5 flex-wrap">
       <FaAngleDoubleLeft
         onClick={() => goToPage(1)}
-        className="pagination-button"
+        className={`pagination-button justify-center items-center ${currentPage==1? "hidden" : "flex"}`}
       />
       <FaAngleLeft
         onClick={() => goToPage(currentPage - 1)}
-        className="pagination-button"
+        className={`pagination-button justify-center items-center ${currentPage==1? "hidden" : "flex"}`}
       />
       {getPageNumbers().map((num,index) => (
         <button key={index}
@@ -37,11 +43,11 @@ export default function Pagination({ currentPage, setCurrentPage, lastPage }) {
       ))}
       <FaAngleRight
         onClick={() => goToPage(currentPage + 1)}
-        className="pagination-button"
+        className={`pagination-button justify-center items-center ${currentPage==lastPage || lastPage<=1? "hidden" : "flex"}`}
       />
       <FaAngleDoubleRight
         onClick={() => goToPage(lastPage)}
-        className="pagination-button"
+        className={`pagination-button justify-center items-center ${currentPage==lastPage || lastPage<=1? "hidden" : "flex"}`}
       />
     </div>
   );
