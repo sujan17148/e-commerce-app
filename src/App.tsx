@@ -1,30 +1,30 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Components/Header/Navbar";
 import Footer from "./Components/Footer/Footer";
-import { ProductsContextProvider } from "./Context/ProductsContext";
 import { ToastContainer } from "react-toastify";
-import {  useSelector } from "react-redux";
-import useLocalStorage from "./Hooks/useLocalStorage";
+import { useAppDispatch, useAppSelector } from "./Hooks/storeHook";
 import { useEffect } from "react";
+import { fetchCategoryList, fetchProducts } from "./store/CartSlice";
+import Loader from "./Components/Loader";
+import Error from "./Pages/Error";
 function App() {
-  const cartData = useSelector((state) => state?.cart);
-   const {setStorageData} =useLocalStorage("guest",{products:[]})
-   useEffect(()=>{
-      setStorageData(cartData)
-   },[cartData])
-
-  
+  const dispatch=useAppDispatch()
+  const {loading,error,products} = useAppSelector((state) => state.cart);
+  useEffect(()=>{
+     dispatch(fetchProducts())
+     dispatch(fetchCategoryList())
+  },[])
+  if(loading) return <Loader className="h-screen w-full"/>
+  if(error) return <Error/>
   return (
-      <ProductsContextProvider>
+      <>
         <Navbar />
         <Outlet />
         <Footer />
-        {/* //toast  */}
         <ToastContainer
           position="top-right"
           autoClose={1500}
           hideProgressBar={false}
-          oldestOnTop
           closeOnClick
           rtl={false}
           pauseOnFocusLoss
@@ -33,7 +33,7 @@ function App() {
           theme="light"
           toastClassName="max-w-[90%] m-1 "
         />
-      </ProductsContextProvider>
+      </>
   );
 }
 export default App;

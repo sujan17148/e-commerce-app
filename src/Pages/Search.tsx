@@ -1,33 +1,34 @@
 import { useContext, useEffect, useState } from "react";
-import { ProductsContext } from "../Context/ProductsContext";
 import ProductCard from "../Components/ProductCard";
 import { useLocation, Link } from "react-router-dom";
 import Loader from "../Components/Loader";
+import { useAppSelector } from "../Hooks/storeHook";
+import { productsProps } from "../store/CartSlice";
 
 export default function Search() {
-  const { data, isLoading } = useContext(ProductsContext);
-  const [searchResults, setSearchResults] = useState([]);
+  const { products } = useAppSelector(state=>state.cart)
+  const [searchResults, setSearchResults] = useState<productsProps[]>([]);
   let location = useLocation();
   const param = new URLSearchParams(location.search);
   const query = param.get("q");
   useEffect(() => {
     window.scrollTo(0,0)
-    if (!data || !data.products) return;
-    setSearchResults(
-      data?.products?.filter(
-        (product) =>
-          product.title.toLowerCase().includes(query.toLowerCase()) ||
-          product.brand.toLowerCase().includes(query.toLowerCase()) ||
-          product.category.toLowerCase().includes(query.toLowerCase())
-      )
-    );
-  }, [data, location.key]);
+    if (!products) return;
+    if(typeof query=="string"){
+      setSearchResults(
+        products?.filter(
+          (product) =>
+            product.title?.toLowerCase().includes(query.toLowerCase()) ||
+            product.brand?.toLowerCase().includes(query.toLowerCase()) ||
+            product.category?.toLowerCase().includes(query.toLowerCase())
+        )
+      );
+    }
+  }, [location.key]);
   return (
     <div className="min-h-[60dvh] p-5 md:px-10">
       <h1 className="font-bold text-xl">Search results for:{query}</h1>
-      {isLoading ? (
-        <Loader />
-      ) : searchResults.length == 0 ? (
+      {searchResults.length == 0 ? (
         <div className="no-products min-h-[50dvh] w-full flex flex-col justify-center items-center gap-3 text-center">
             <h1 className="text-secondary font-bold text-2xl md:text-4xl">OOPs! 😕</h1>
           <h1 className="text-clack font-bold text-2xl md:text-4xl">
@@ -42,7 +43,7 @@ export default function Search() {
               to={`/product/details/${product.id}`}
               key={product.id}
             >
-              <ProductCard productId={product.id} />
+              <ProductCard {...product} />
             </Link>
           ))}
         </div>

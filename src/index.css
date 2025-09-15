@@ -12,9 +12,18 @@
     .custom-flexible-cards{
         @apply inline-block  max-w-[185px] w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(25%-15px)] xl:w-[calc(20%-16px)]  2xl:w-[calc(16.666%-16.66px)];
     }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
    
-
-
     .pagination-button{
         @apply   p-3  aspect-square w-10 h-10 rounded  font-semibold shadow-[6px_6px_12px_#c5c5c5] hover:scale-110 transition duration-300 ease-linear;
     }

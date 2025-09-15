@@ -2,10 +2,11 @@ import {useEffect, useState } from "react";
 import CartProductCard from "../Components/CartProductCard";
 import { Link } from "react-router-dom";
 import CartImage from "../assets/cart.png"
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../Hooks/storeHook";
+import { cartProps } from "../store/CartSlice";
 
 export default function Cart() {
-  const cartData=useSelector(state=>state?.cart?.products)
+  const cartData=useAppSelector(state=>state.cart.cart)
   useEffect(()=>{
     window.scrollTo(0,0)
   },[])
@@ -37,18 +38,21 @@ function NoCartItems(){
   </div>
 }
 
-function Bills({data}){
+function Bills({data}:{data:cartProps[]}){
   const [totalAmount,setTotalAmount]=useState(0)
   const [totalDiscount,setTotalDiscount]=useState(0)
   let deliveryCharge=25
   let handlingCharge=5
   useEffect(()=>{
-    const totalAmount=data?.map(product=>product.price*product.quantity)?.reduce((acc,currentVal)=>{
+    const totalAmount=Number(data?.map(product=>product.price*product.quantity)?.reduce((acc,currentVal)=>{
       return acc+currentVal;
-    },0)
-    const totalDiscount=data?.map(product=>product.discount*product.quantity || 0)?.reduce((acc,currentVal)=>{
-      return acc+currentVal;
-    },0) 
+    },0).toFixed(2))
+    const totalDiscount = Number(data
+      ?.map(product => {
+        const discountAmount = (product.price * product.discountPercentage) / 100;
+        return discountAmount * product.quantity;
+      })
+      .reduce((acc, currentVal) => acc + currentVal, 0).toFixed(2) || 0)
    setTotalAmount(totalAmount)
   setTotalDiscount(totalDiscount)
   },[data])

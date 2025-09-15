@@ -1,29 +1,33 @@
-import { useContext, } from "react";
-import { ProductsContext } from "../Context/ProductsContext";
-import { useDispatch,useSelector } from "react-redux";
-import { addToCart,increaseQuantity } from "../Features/CartSlice";
+import { useDispatch } from "react-redux";
+import { addToCart,} from "../store/CartSlice";
 import { useUser } from "@clerk/clerk-react";
 import { toast } from "react-toastify";
+import { useAppSelector } from "../Hooks/storeHook";
 
-export default function AddToCartButton({ id, quantity = 1, className = "" }) {
+type addToCartButtonProps={
+  id:number,
+  quantity?:number,
+  className?:string
+}
+
+export default function AddToCartButton({ id, quantity=1, className = "" }:addToCartButtonProps) {
   let dispatch=useDispatch()
-  let cartData=useSelector(state=>state.cart.products)
+  const {loading,error,cart:cartData,products}=useAppSelector(state=>state.cart)
   let {user}=useUser()
-  const { data, error, isLoading } = useContext(ProductsContext);
-  function addtoCart(e) {
+  function addtoCart(e:React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     e.stopPropagation();
     if(!user || !user.id){
       toast.warn("🔒 Please log in to add products to your cart.");
       return;
     }
-    if (isLoading || error) return;
-    const product = data?.products.find(product => product.id == id);
-    if (!product || product.quantity<=0 || quantity<=0){
+    if (loading || error) return;
+    const product = products.find(i => i.id == id);
+    if (!product || quantity<=0){
       toast.warn("⚠️ Please select a valid quantity before adding.");
       return;
     }
- const alreadyInCart=cartData?.some(product=>product.id==id)
+ const alreadyInCart=cartData?.some(i=>i.id==id)
     if (alreadyInCart) {
       toast.info("Product is already in the cart — quantity updated.");
     } else {
@@ -32,15 +36,15 @@ export default function AddToCartButton({ id, quantity = 1, className = "" }) {
     dispatch(addToCart({
         id: product.id,
         title: product.title,
-        image: product.image,
+        images: product.images,
         quantity: quantity,
         price: product.price,
-        discount:product.discount || 0,
+        discountPercentage:product.discountPercentage || 0,
       }))
   }
   return (
     <button
-      onClick={(e) => addtoCart(e)}
+      onClick={addtoCart}
       className={`${className} rounded text-sm px-2 p-1 text-primary  font-semibold whitespace-nowrap bg-accent`}
     >
       Add To Cart

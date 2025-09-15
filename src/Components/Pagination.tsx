@@ -1,11 +1,18 @@
+import { SetStateAction } from "react";
 import {
   FaAngleDoubleLeft,
   FaAngleLeft,
   FaAngleDoubleRight,
   FaAngleRight,
 } from "react-icons/fa";
-export default function Pagination({ currentPage, setCurrentPage, lastPage }) {
-  function goToPage(page) {
+
+type paginationProps={
+  currentPage:number,
+  setCurrentPage:React.Dispatch<SetStateAction<number>>,
+  lastPage:number,
+}
+export default function Pagination({ currentPage, setCurrentPage, lastPage }:paginationProps) {
+  function goToPage(page:number) {
     let selectedPage = Math.max(1, Math.min(page, lastPage));
     setCurrentPage(selectedPage);
   }

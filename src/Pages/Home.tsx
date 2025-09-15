@@ -1,9 +1,9 @@
-import { useContext, useEffect, useMemo } from "react";
-import { ProductsContext } from "../Context/ProductsContext";
+import { useEffect, useMemo } from "react";
 import { FaShippingFast } from "react-icons/fa";
 import { IoShieldOutline } from "react-icons/io5";
 import { BiSupport } from "react-icons/bi";
 import Loader from "../Components/Loader"
+import { IconType } from "react-icons";
 
 //swiper
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -14,6 +14,7 @@ import "swiper/css/navigation";
 // import required modules
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Link, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../Hooks/storeHook";
 
 export default function Home() {
   useEffect(()=>{
@@ -29,18 +30,9 @@ window.scrollTo(0,0)
 }
 
 function HeroSection() {
-  const { data, isLoading, error } = useContext(ProductsContext);
+  const { products } = useAppSelector(state=>state.cart)
   const navigate = useNavigate();
-  return (
-    <>
-      {isLoading ? (
-        <Loader className="h-screen w-full"/>
-      ) : error ? (
-        <div className="min-h-[85dvh] flex items-center justify-center">
-          Error
-        </div>
-      ) : (
-        <Swiper
+  return products.length>0 &&  <Swiper
           spaceBetween={0}
           centeredSlides={true}
           autoplay={{
@@ -55,12 +47,12 @@ function HeroSection() {
           modules={[Autoplay, Pagination, Navigation]}
           className="mySwiper h-fit"
         >
-          {data?.products.slice(0, 9).map((product) => (
+          {products.slice(0, 9).map((product) => (
             <SwiperSlide key={product.id}>
               <div className="h-fit min-h-[85dvh] py-15 md:py-25 text-center md:text-left p-5 lg:px-25 md:flex flex-row-reverse items-center">
                 <div className="right-section flex justify-center items-center md:w-1/2 mb-10 md:mb-0">
                   <img
-                    src={product.image}
+                    src={product.images[0]}
                     alt="product"
                     className="object-cover rounded-full w-full max-w-[400px] lg:max-w-2/3 h-auto hover:scale-105 transition duration-100 ease-linear"
                   />
@@ -83,28 +75,13 @@ function HeroSection() {
             </SwiperSlide>
           ))}
         </Swiper>
-      )}
-    </>
-  );
 }
 
 function CategoryList() {
-  const { data, error, isLoading } = useContext(ProductsContext);
-  const categories = useMemo(() => {
-    return [...new Set(data?.products.map((product) => product.category))];
-  }, [data]);
+  const { categoryList, error, loading } = useAppSelector(state=>state.cart)
   return (
     <div className="h-[120px] flex gap-2.5 items-center justify-center flex-wrap p-5 mg:px-10">
-      {isLoading ? (
-        <div className=" loader h-full flex items-center justify-center">
-          Loading...
-        </div>
-      ) : error ? (
-        <div className="error h-full flex items-center justify-center">
-          Error
-        </div>
-      ) : (
-        categories?.map((category, index) => (
+        {categoryList?.map((category, index) => (
           <Link
           to={`/category/${category}`} 
            key={index}>
@@ -112,8 +89,7 @@ function CategoryList() {
               {category}
             </button>
           </Link>
-        ))
-      )}
+        ))}
     </div>
   );
 }
@@ -140,7 +116,8 @@ function FeatureSection() {
   );
 }
 
-function FeaturesDetailsCard({ Icon, heading, description }) {
+
+function FeaturesDetailsCard({Icon, heading, description }:{Icon:IconType,heading:string,description:string}) {
   return (
     <div className="aspect-[16/10] w-96 rounded-2xl shadow-[6px_6px_12px_#c5c5c5]  flex flex-col items-center justify-center text-center space-y-4 py-3 px-5 hover:scale-105 transition duration-300 ease-linear">
       <Icon className="py-4 rounded-full bg-secondary h-15 w-15  text-primary " />

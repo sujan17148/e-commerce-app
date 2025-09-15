@@ -12,12 +12,12 @@ import { HiMenuAlt3 } from "react-icons/hi";
 import { FaCartShopping } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../Hooks/storeHook";
 
 export default function Navbar() {
   let location=useLocation()
-  const totalCartItems=useSelector(state=>state.cart?.products?.length) ?? 0
-  const [isMobileSearchVisible,setIsMobileSearchVisible]=useState(false)
+  const totalCartItems:number=useAppSelector(state=>state.cart.cart.length) ?? 0
+  const [isMobileSearchVisible,setIsMobileSearchVisible]=useState<boolean>(false)
   useEffect(()=>{
 setIsMobileSearchVisible(false)
   },[location.search])
@@ -100,8 +100,8 @@ setIsMobileSearchVisible(false)
     </div>
   );
 }
-function MobileNavbar({ className }) {
-  const [isMenuHidden, setIsMenuHidden] = useState(true);
+function MobileNavbar() {
+  const [isMenuHidden, setIsMenuHidden] = useState<Boolean>(true);
   return (
     <div className="mobile-navbar-section relative">
       <HiMenuAlt3

@@ -29,12 +29,7 @@ export const router=createBrowserRouter(createRoutesFromElements(
 
 //Protectd Routes
 function ProtectedRoute(){
-    let currentUser;
     const {user}=useUser()
-    if(user && user!={}){
-      currentUser=true
-    }else{
-        currentUser=null
-    }
-    return currentUser? <Outlet/>:<Navigate to="/" replace/>
+    const isAuthenticated:boolean=!!user
+    return isAuthenticated? <Outlet/>:<Navigate to="/"/>
 }

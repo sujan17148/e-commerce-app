@@ -1,16 +1,12 @@
-//in the category section the name value of radio button were same which means i can check only one at a time but when i use this filterProduct component more that one time then the same name value is shared among components but among all radio buttons only one can be checked at a time so it was causign unexpected behaviour between components. To solve this we used useId hook which is unique for each component i used name ="category-uniqueId" where uniqueId=useId() so our name value  for radio button is different in each component solving the issue
-
-
-import {useState,useContext,useEffect,useId} from "react"
-import { ProductsContext } from "../Context/ProductsContext";
+import {useState,useEffect, SetStateAction} from "react"
 import useDebounce from "../Hooks/useDebounce";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoSearchSharp } from "react-icons/io5";
+import { useAppSelector } from "../Hooks/storeHook";
+import { productsProps } from "../store/CartSlice";
 
-export default function FilterProducts({ product,className,setCurrentPage}) {
-  const { setFilteredProduct } = product;
-  const { data, error, isLoading } = useContext(ProductsContext);
-
+export default function FilterProducts({ setFilteredProduct,className,setCurrentPage}:{setFilteredProduct:React.Dispatch<React.SetStateAction<productsProps[]>>,className:string,setCurrentPage:React.Dispatch<SetStateAction<number>>}) {
+  const { products, error, loading } = useAppSelector(state=>state.cart);
   //search section
   const [searchValue, setSearchValue] = useState("");
   const { debouncedValue } = useDebounce(searchValue);
@@ -20,56 +16,65 @@ export default function FilterProducts({ product,className,setCurrentPage}) {
   const [selectedBrand, setSelectedBrand] = useState("all");
 
   //pricerange
-  const [rangeValue, setRangeValue] = useState(5804);
+  const [rangeValue, setRangeValue] = useState(37000);
 
   //filtering products
   useEffect(() => {
-    if (!data?.products) return;
-    let products = data.products;
-    if (rangeValue !== null)
-      products = products?.filter((product) => product.price <= rangeValue);
-    if (selectedcategory !== "all")
-      products = products.filter(
-        (product) => product.category == selectedcategory
+    if (!products) return;
+    let tempFilteredProducts=products
+    tempFilteredProducts = tempFilteredProducts.filter(
+      (product) => product.price <= rangeValue
+    );
+    if (selectedcategory !== "all") {
+      tempFilteredProducts = tempFilteredProducts.filter(
+        (product) => product.category === selectedcategory
       );
-    if (selectedBrand !== "all")
-      products = products.filter((product) => product.brand == selectedBrand);
-    if(debouncedValue.trim()!==""){
-      products=products.filter(product=>product.title.toLowerCase().includes(debouncedValue.trim().toLowerCase()) ||product.category.toLowerCase().includes(debouncedValue.trim().toLowerCase()) || product.brand.toLowerCase().includes(debouncedValue.trim().toLowerCase()))
     }
-
-    setFilteredProduct(()=>{
-      setCurrentPage(1)
-    return products
+    if (selectedBrand !== "all") {
+      tempFilteredProducts = tempFilteredProducts.filter(
+        (product) => product.brand === selectedBrand
+      );
+    }
+    if (debouncedValue.trim() !== "") {
+      const search = debouncedValue.trim().toLowerCase();
+      tempFilteredProducts = tempFilteredProducts.filter(
+        (product) =>
+          product.title?.toLowerCase().includes(search) ||
+          product.category?.toLowerCase().includes(search) ||
+          product.brand?.toLowerCase().includes(search)
+      );
+    }
+    setFilteredProduct(() => {
+      setCurrentPage(1);
+      return tempFilteredProducts;
     });
-  }, [data, rangeValue, selectedBrand, selectedcategory, debouncedValue]);
+  }, [products, rangeValue, selectedBrand, selectedcategory, debouncedValue]);
 
-  function handleReset(e) {
+  function handleReset(e:React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    setRangeValue(5804);
+    setRangeValue(37000);
     setSelectedBrand("all");
     setSelectedCategory("all");
     setSearchValue("")
   }
   return (
     <>
-      {!isLoading && !error && (
+      {!loading && !error && (
         <div
-          className={`${className} filter-section  min-h-[40dvh] h-fit rounded text-black bg-[#EEF0F1] my-3 sm:w-62 p-3`}
+          className={`${className} filter-section  min-h-[40dvh] h-fit rounded text-black bg-[#EEF0F1] sm:w-62 p-3`}
         >
           <p className="font-bold mb-2">Filter</p>
-          <SearchBar search={{ searchValue, setSearchValue }} />
+          <SearchBar searchValue={ searchValue} setSearchValue={ setSearchValue } />
           <Category
-            data={data}
-            category={{ selectedcategory, setSelectedCategory }}
+            selectedcategory={ selectedcategory} setSelectedCategory={ setSelectedCategory }
           />
           <BrandsDropDown
-            data={data}
-            brand={{ selectedBrand, setSelectedBrand }}
+            products={products}
+            selectedBrand={ selectedBrand} setSelectedBrand={ setSelectedBrand }
           />
-          <PriceRange priceRange={{ rangeValue, setRangeValue }} />
+          <PriceRange rangeValue={ rangeValue} setRangeValue= { setRangeValue } />
           <button
-            onClick={(e) => handleReset(e)}
+            onClick={handleReset}
             className="bg-accent px-3 py-2 w-2/3 font-bold text-lg text-primary rounded hover:scale-105 transition duration-200 ease-linear mt-5"
           >
             Reset
@@ -80,8 +85,7 @@ export default function FilterProducts({ product,className,setCurrentPage}) {
   );
 }
 
- function SearchBar({ search }) {
-  const { searchValue, setSearchValue } = search;
+ function SearchBar({ searchValue,setSearchValue }:{searchValue:string,setSearchValue:React.Dispatch<React.SetStateAction<string>>}) {
   return (
     <div className="flex items-center justify-between p-2 focus-within:border-accent  focus-within:border-2 rounded">
       <input
@@ -95,11 +99,8 @@ export default function FilterProducts({ product,className,setCurrentPage}) {
     </div>
   );
 }
-function Category({ data, category }) {
-  const categoryList = [
-    ...new Set(data?.products.map((product) => product.category)),
-  ];
-  const { selectedcategory, setSelectedCategory } = category;
+function Category({selectedcategory,setSelectedCategory }:{selectedcategory:string,setSelectedCategory:React.Dispatch<SetStateAction<string>>}) { 
+const categoryList=useAppSelector(state=>state.cart.categoryList)
   return (
     <div className="w-full">
       <p className="my-2 font-bold">Categories</p>
@@ -119,7 +120,7 @@ function Category({ data, category }) {
       </div>
 
       {/* //rendering categoryies  */}
-      {categoryList.map((category, index) => (
+      {categoryList.slice(0,15).map((category, index) => (
         <div key={index} className="flex items-center">
           <input
             type="radio"
@@ -139,9 +140,8 @@ function Category({ data, category }) {
   );
 }
 
-function BrandsDropDown({ data, brand }) {
-  const { selectedBrand, setSelectedBrand } = brand;
-  const brands = [...new Set(data?.products.map((product) => product.brand))];
+function BrandsDropDown({ products,selectedBrand, setSelectedBrand}:{products:productsProps[],selectedBrand:string,setSelectedBrand:React.Dispatch<SetStateAction<string>>}) {
+  const brands = [...new Set(products.map((product) => product.brand))];
   return (
     <div className="brands mt-5">
       <p className="font-bold my-2">Brands</p>
@@ -164,8 +164,7 @@ function BrandsDropDown({ data, brand }) {
   );
 }
 
-function PriceRange({ priceRange }) {
-  const { rangeValue, setRangeValue } = priceRange;
+function PriceRange({ rangeValue,setRangeValue}:{rangeValue:number,setRangeValue:React.Dispatch<SetStateAction<number>>}) {
   return (
     <div className="price-range mt-7">
       <p className="font-bold my-2">Price Range</p>
@@ -173,7 +172,7 @@ function PriceRange({ priceRange }) {
       <input
         type="range"
         min="0"
-        max="5804"
+        max="37000"
         value={rangeValue}
         onChange={(e) => setRangeValue(Number(e.target.value))}
         className="appearance-none bg-secondary rounded-xl w-full h-2 outline-none accent-accent"
