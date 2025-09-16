@@ -80,7 +80,7 @@ function HeroSection() {
 function CategoryList() {
   const { categoryList, error, loading } = useAppSelector(state=>state.cart)
   return (
-    <div className="h-[120px] flex gap-2.5 items-center justify-center flex-wrap p-5 mg:px-10">
+    <div className="flex gap-2.5 items-center justify-center flex-wrap p-5 mg:px-10">
         {categoryList?.map((category, index) => (
           <Link
           to={`/category/${category}`} 
