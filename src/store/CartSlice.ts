@@ -62,6 +62,9 @@ const cartSlice=createSlice({
     name:"cart",
     initialState,
     reducers:{
+      hydrateCart: (state, action: PayloadAction<cartProps[]>) => {
+        state.cart = action.payload;
+      },
        addToCart:(state,action:PayloadAction<cartProps>)=>{
         const item=state.cart.find(cartItem=>cartItem.id==action.payload.id)
          if(item){
@@ -115,5 +118,5 @@ const cartSlice=createSlice({
     }
   
 })
-export const{addToCart,removeFromCart,updateQuantity,decreaseQuantityByOne,increaseQuantityByOne}=cartSlice.actions
+export const{hydrateCart,addToCart,removeFromCart,updateQuantity,decreaseQuantityByOne,increaseQuantityByOne}=cartSlice.actions
 export default cartSlice.reducer

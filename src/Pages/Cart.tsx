@@ -1,9 +1,10 @@
-import {useEffect, useState } from "react";
+import {useEffect, useMemo, useState } from "react";
 import CartProductCard from "../Components/CartProductCard";
 import { Link } from "react-router-dom";
 import CartImage from "../assets/cart.png"
 import { useAppSelector } from "../Hooks/storeHook";
 import { cartProps } from "../store/CartSlice";
+import { Billing } from "../utility/Billing";
 
 export default function Cart() {
   const cartData=useAppSelector(state=>state.cart.cart)
@@ -22,7 +23,7 @@ export default function Cart() {
           id={product.id}
           />
         ))}
-        <Bills data={cartData}/>
+        <Bills/>
     </div>
      </div>
 }
@@ -38,35 +39,20 @@ function NoCartItems(){
   </div>
 }
 
-function Bills({data}:{data:cartProps[]}){
-  const [totalAmount,setTotalAmount]=useState(0)
-  const [totalDiscount,setTotalDiscount]=useState(0)
-  let deliveryCharge=25
-  let handlingCharge=5
-  useEffect(()=>{
-    const totalAmount=Number(data?.map(product=>product.price*product.quantity)?.reduce((acc,currentVal)=>{
-      return acc+currentVal;
-    },0).toFixed(2))
-    const totalDiscount = Number(data
-      ?.map(product => {
-        const discountAmount = (product.price * product.discountPercentage) / 100;
-        return discountAmount * product.quantity;
-      })
-      .reduce((acc, currentVal) => acc + currentVal, 0).toFixed(2) || 0)
-   setTotalAmount(totalAmount)
-  setTotalDiscount(totalDiscount)
-  },[data])
+function Bills(){
+  const data=useAppSelector(state=>state.cart.cart)
+  const billings=useMemo(()=>new Billing(data),[data])
   return <div className="bg-primary shadow-[6px_6px_12px_#c5c5c5] w-full md:w-1/2 min-h-52 p-3 rounded-xl">
             <h1 className="text-secondary font-semibold text-xl mb-3">Bill details</h1>
             <div className="bill-details">
-                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>Items total</span> <span>${totalAmount}</span></div>
-                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>Delivery charge</span> <div><span className="line-through">${deliveryCharge}</span>  <span className="font-semibold text-red-500">Free</span></div></div>
-                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>Handling charge</span><span>${handlingCharge}</span></div>
+                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>Items total</span> <span>${billings.TotalAmount}</span></div>
+                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>Delivery charge</span> <div><span className="line-through">${billings.deliveryCharge}</span>  <span className="font-semibold text-red-500">Free</span></div></div>
+                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>Handling charge</span><span>${billings.handlingCharge}</span></div>
                  <hr  className="text-gray-300 mt-2"/>
-                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>GrandTotal</span> <span>${totalAmount+handlingCharge}</span></div>
-                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>Discount</span> <span>${totalDiscount}</span></div>
+                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>GrandTotal</span> <span>${billings.GrandTotal}</span></div>
+                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>Discount</span> <span>${billings.TotalDiscount}</span></div>
                  <hr  className="text-gray-300 mt-2"/>
-                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>Net Total</span> <span>${totalAmount+handlingCharge-totalDiscount}</span></div>
+                 <div className="flex justify-between text-lg  text-gray-500 items-center"> <span>Net Total</span> <span>${billings.NetTotal}</span></div>
                  
             </div>
   </div>
